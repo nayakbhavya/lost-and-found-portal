@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lost & Found</title>
+
+    <!-- ✅ Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <h1 class="text-center mb-4">Lost & Found Portal</h1>
+
+    <!-- NAVBAR -->
+    <div class="mb-4 text-center">
+        <a class="btn btn-primary" href="/add/">Add Item</a>
+
+        {% if user.is_authenticated %}
+            <a class="btn btn-danger" href="/logout/">Logout</a>
+        {% else %}
+            <a class="btn btn-success" href="/login/">Login</a>
+            <a class="btn btn-warning" href="/register/">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- SEARCH -->
+    <form method="GET" class="mb-4">
+        <input class="form-control" type="text" name="q" placeholder="Search items..." value="{{ query }}">
+    </form>
+
+    {% if query %}
+        <p class="text-muted">Showing results for: <strong>{{ query }}</strong></p>
+    {% endif %}
+
+    <!-- ITEMS GRID -->
+    <div class="row">
+        {% for item in items %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+
+                {% if item.image %}
+                <img src="{{ item.image.url }}" class="card-img-top" height="200">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.description }}</p>
+                    <p class="text-muted">By {{ item.user }}</p>
+
+                    {% if request.user == item.user %}
+                        <a class="btn btn-sm btn-warning" href="/edit/{{ item.id }}/">Edit</a>
+                        <a class="btn btn-sm btn-danger" href="/delete/{{ item.id }}/">Delete</a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+        {% empty %}
+            <p>No items found.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>
